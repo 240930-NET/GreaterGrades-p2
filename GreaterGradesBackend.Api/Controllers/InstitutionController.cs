@@ -1,7 +1,9 @@
 using GreaterGradesBackend.Api.Models;
 using GreaterGradesBackend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GreaterGradesBackend.Api.Controllers
@@ -11,13 +13,15 @@ namespace GreaterGradesBackend.Api.Controllers
     public class InstitutionsController : ControllerBase
     {
         private readonly IInstitutionService _institutionService;
+        private readonly IUserService _userService;
 
-        public InstitutionsController(IInstitutionService institutionService)
+        public InstitutionsController(IInstitutionService institutionService, IUserService userService)
         {
             _institutionService = institutionService;
+            _userService = userService;
         }
 
-        // Retrieve all Institutions
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<InstitutionDto>>> GetAllInstitutions()
         {
@@ -25,10 +29,22 @@ namespace GreaterGradesBackend.Api.Controllers
             return Ok(institutions);
         }
 
-        // Retrieve a specific Institution by its ID
+        [Authorize(Roles = "Admin,InstitutionAdmin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<InstitutionDto>> GetInstitutionById(int id)
         {
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            if (currentUserRole == "InstitutionAdmin")
+            {
+                var user = await _userService.GetUserByIdAsync(currentUserId);
+                if (user.InstitutionId != id)
+                {
+                    return Forbid();
+                }
+            }
+
             var institution = await _institutionService.GetInstitutionByIdAsync(id);
             if (institution == null)
             {
@@ -37,7 +53,7 @@ namespace GreaterGradesBackend.Api.Controllers
             return Ok(institution);
         }
 
-        // Create a new Institution
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<InstitutionDto>> CreateInstitution(CreateInstitutionDto createInstitutionDto)
         {
@@ -50,13 +66,25 @@ namespace GreaterGradesBackend.Api.Controllers
             return CreatedAtAction(nameof(GetInstitutionById), new { id = createdInstitution.InstitutionId }, createdInstitution);
         }
 
-        // Update an existing Institution
+        [Authorize(Roles = "Admin,InstitutionAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInstitution(int id, UpdateInstitutionDto updateInstitutionDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            if (currentUserRole == "InstitutionAdmin")
+            {
+                var user = await _userService.GetUserByIdAsync(currentUserId);
+                if (user.InstitutionId != id)
+                {
+                    return Forbid();
+                }
             }
 
             var result = await _institutionService.UpdateInstitutionAsync(id, updateInstitutionDto);
@@ -68,7 +96,7 @@ namespace GreaterGradesBackend.Api.Controllers
             return NoContent();
         }
 
-        // Delete an Institution by its ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInstitution(int id)
         {

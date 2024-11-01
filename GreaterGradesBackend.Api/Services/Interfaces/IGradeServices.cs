@@ -11,5 +11,6 @@ namespace GreaterGradesBackend.Services.Interfaces
         Task<GradeDto> CreateGradeAsync(CreateGradeDto createGradeDto);
         Task<bool> UpdateGradeAsync(int gradeId, UpdateGradeDto updateGradeDto);
         Task<bool> DeleteGradeAsync(int gradeId);
+        Task<IEnumerable<GradeDto>> GetGradesByInstitutionIdAsync(int institutionId);
     }
 }

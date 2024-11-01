@@ -10,14 +10,12 @@ namespace GreaterGradesBackend.Infrastructure
         {
         }
 
-        //public DbSet<Student> Students { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Grade> Grades { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Institution> Institutions { get; set; }
 
-        // Configure entity relationships and constraints
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -41,7 +39,7 @@ namespace GreaterGradesBackend.Infrastructure
                     sc => sc.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.Restrict)
                 );
 
-            // Configure delete behavior for Grades with Restrict to avoid cascade path errors
+            // Configure delete behavior for Grades
             modelBuilder.Entity<Grade>()
                 .HasOne(g => g.User)
                 .WithMany(u => u.Grades)
@@ -58,13 +56,14 @@ namespace GreaterGradesBackend.Infrastructure
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Institution)
                 .WithMany(i => i.Users)
+                .HasForeignKey(u => u.InstitutionId) // Explicitly set InstitutionId as the foreign key
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Class>()
                 .HasOne(c => c.Institution)
                 .WithMany(i => i.Classes)
+                .HasForeignKey(c => c.InstitutionId) // Explicitly set InstitutionId as the foreign key
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
     }
 }

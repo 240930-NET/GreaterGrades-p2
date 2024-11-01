@@ -39,7 +39,7 @@ namespace GreaterGradesBackend.Services.Implementations
         public async Task<ClassDto> CreateClassAsync(CreateClassDto createClassDto)
         {
             var classEntity = _mapper.Map<Class>(createClassDto);
-            var existingInstitution = await _unitOfWork.Institutions.GetInstitutionWithDetailsAsync(createUserDto.InstitutionId);
+            var existingInstitution = await _unitOfWork.Institutions.GetInstitutionWithDetailsAsync(createClassDto.InstitutionId);
             if (existingInstitution == null)
             {
                 throw new Exception("Institution does not exist");
@@ -76,8 +76,6 @@ namespace GreaterGradesBackend.Services.Implementations
             return true;
         }
 
-
-        // TODO: Properly remove and add students and assignments to class on removal / addition
         public async Task<bool> AddStudentToClassAsync(int classId, int userId)
         {
             var classEntity = await _unitOfWork.Classes.GetClassWithDetailsAsync(classId);
@@ -111,6 +109,13 @@ namespace GreaterGradesBackend.Services.Implementations
 
             return true;
         }
+
+
+        public async Task<IEnumerable<Class>> GetClassesByInstitutionIdAsync(int institutionId)
+        {
+            return await _unitOfWork.Classes.GetClassesByInstitutionIdAsync(institutionId);
+        }
+
         public async Task<bool> AddTeacherToClassAsync(int classId, int userId)
         {
             var classEntity = await _unitOfWork.Classes.GetClassWithDetailsAsync(classId);

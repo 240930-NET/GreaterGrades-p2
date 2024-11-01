@@ -1,7 +1,9 @@
 using GreaterGradesBackend.Api.Models;
 using GreaterGradesBackend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GreaterGradesBackend.Api.Controllers
@@ -11,42 +13,65 @@ namespace GreaterGradesBackend.Api.Controllers
     public class GradesController : ControllerBase
     {
         private readonly IGradeService _gradeService;
+        private readonly IAssignmentService _assignmentService;
+        private readonly IClassService _classService;
+        private readonly IUserService _userService;
 
-        public GradesController(IGradeService gradeService)
+        public GradesController(IGradeService gradeService, IAssignmentService assignmentService, IClassService classService, IUserService userService)
         {
             _gradeService = gradeService;
+            _assignmentService = assignmentService;
+            _classService = classService;
+            _userService = userService;
         }
 
+        [Authorize(Roles = "Admin,InstitutionAdmin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GradeDto>>> GetAllGrades()
         {
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            if (currentUserRole == "InstitutionAdmin")
+            {
+                var user = await _userService.GetUserByIdAsync(currentUserId);
+                var institutionGrades = await _gradeService.GetGradesByInstitutionIdAsync(user.InstitutionId);
+                return Ok(institutionGrades);
+            }
+
             var grades = await _gradeService.GetAllGradesAsync();
             return Ok(grades);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GradeDto>> GetGradeById(int id)
         {
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+            var user = await _userService.GetUserByIdAsync(currentUserId);
+
             var grade = await _gradeService.GetGradeByIdAsync(id);
             if (grade == null)
             {
                 return NotFound();
             }
-            return Ok(grade);
-        }
 
-        /*[HttpPost]
-        public async Task<ActionResult<GradeDto>> CreateGrade(CreateGradeDto createGradeDto)
-        {
-            if (!ModelState.IsValid)
+            var assignment = await _assignmentService.GetAssignmentByIdAsync(grade.AssignmentId);
+            var classDto = await _classService.GetClassByIdAsync(assignment.ClassId);
+
+            if (currentUserRole == "Admin" ||
+                (currentUserRole == "InstitutionAdmin" && classDto.InstitutionId == user.InstitutionId) ||
+                (currentUserRole == "Teacher" && user.TaughtClassIds.Contains(assignment.ClassId)) ||
+                (currentUserRole == "Student" && grade.UserId == currentUserId))
             {
-                return BadRequest(ModelState);
+                return Ok(grade);
             }
 
-            var createdGrade = await _gradeService.CreateGradeAsync(createGradeDto);
-            return CreatedAtAction(nameof(GetGradeById), new { id = createdGrade.GradeId }, createdGrade);
-        }*/
+            return Forbid();
+        }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGrade(int id, UpdateGradeDto updateGradeDto)
         {
@@ -55,27 +80,32 @@ namespace GreaterGradesBackend.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _gradeService.UpdateGradeAsync(id, updateGradeDto);
-            if (!result)
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+            var user = await _userService.GetUserByIdAsync(currentUserId);
+
+            var grade = await _gradeService.GetGradeByIdAsync(id);
+            if (grade == null)
             {
                 return NotFound();
             }
 
-            return NoContent();
-        }
+            var assignment = await _assignmentService.GetAssignmentByIdAsync(grade.AssignmentId);
+            var classDto = await _classService.GetClassByIdAsync(assignment.ClassId);
 
-        /*
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGrade(int id)
-        {
-            var result = await _gradeService.DeleteGradeAsync(id);
-            if (!result)
+            if (currentUserRole == "Admin" ||
+                (currentUserRole == "InstitutionAdmin" && classDto.InstitutionId == user.InstitutionId) ||
+                (currentUserRole == "Teacher" && user.TaughtClassIds.Contains(assignment.ClassId)))
             {
-                return NotFound();
+                var result = await _gradeService.UpdateGradeAsync(id, updateGradeDto);
+                if (!result)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
 
-            return NoContent();
+            return Forbid();
         }
-        */
     }
 }

@@ -15,11 +15,13 @@ namespace GreaterGradesBackend.Domain.Entities
         [MaxLength(50)]
         public string Subject { get; set; }
 
+        [ForeignKey("Institution")]
+        public int InstitutionId { get; set; }
+
         public Institution Institution { get; set; }
 
         public ICollection<User> Students { get; set; }
         public ICollection<User> Teachers { get; set; }
-
         public ICollection<Assignment> Assignments { get; set; }
 
         public Class()

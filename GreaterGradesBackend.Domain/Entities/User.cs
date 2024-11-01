@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using GreaterGradesBackend.Domain.Enums;
+
 
 namespace GreaterGradesBackend.Domain.Entities
 {
@@ -19,8 +21,7 @@ namespace GreaterGradesBackend.Domain.Entities
         [Required]
         public string PasswordHash { get; set; }
 
-        [MaxLength(50)]
-        public string Role { get; set; }
+        public Role Role { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -32,8 +33,12 @@ namespace GreaterGradesBackend.Domain.Entities
 
         public ICollection<Class> Classes { get; set; }
         public ICollection<Grade> Grades { get; set; }
-        public ICollection<Class> TaughtClasses { get; set;}
-        public Institution Institution { get; set; }
+        public ICollection<Class> TaughtClasses { get; set; }
+
+        [ForeignKey("Institution")]
+        public int InstitutionId { get; set; }
+        
+        public Institution Institution { get; set; } // Navigation property
 
         [NotMapped] 
         public IEnumerable<int> ClassIds => Classes.Select(c => c.ClassId);
@@ -46,7 +51,7 @@ namespace GreaterGradesBackend.Domain.Entities
 
         public User()
         {
-            Role = "Student"; // Default role
+            Role = Role.Student; // Default role
             TaughtClasses = new HashSet<Class>();
             Classes = new HashSet<Class>();
             Grades = new HashSet<Grade>();

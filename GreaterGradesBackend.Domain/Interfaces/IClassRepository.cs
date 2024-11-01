@@ -7,5 +7,6 @@ namespace GreaterGradesBackend.Domain.Interfaces
     {
         Task<Class> GetClassWithDetailsAsync(int classId);
         Task<List<Class>> GetAllClassesWithDetailsAsync();
+        Task<IEnumerable<Class>> GetClassesByInstitutionIdAsync(int institutionId);
     }
 }

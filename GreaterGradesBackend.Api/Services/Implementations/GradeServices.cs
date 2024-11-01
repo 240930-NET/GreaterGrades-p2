@@ -32,6 +32,12 @@ namespace GreaterGradesBackend.Services.Implementations
             return _mapper.Map<IEnumerable<GradeDto>>(grades);
         }
 
+        public async Task<IEnumerable<GradeDto>> GetGradesByInstitutionIdAsync(int institutionId)
+        {
+            var grades = _unitOfWork.Grades.GetGradesByInstitutionIdAsync(institutionId);
+            return _mapper.Map<IEnumerable<GradeDto>>(grades);
+        }
+
         public async Task<GradeDto> GetGradeByIdAsync(int gradeId)
         {
             var grade = await _unitOfWork.Grades.GetByIdAsync(gradeId);

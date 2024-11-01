@@ -8,5 +8,7 @@ namespace GreaterGradesBackend.Domain.Interfaces
         Task<IEnumerable<Grade>> GetGradesByUserAsync(int userId);
         Task<Grade> GetGradeByUserAndAssignmentAsync(int userId, int assignmentId);
 
+        Task<IEnumerable<Grade>> GetGradesByInstitutionIdAsync(int institutionId);
+
     }
 }

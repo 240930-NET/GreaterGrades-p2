@@ -3,6 +3,10 @@ using GreaterGradesBackend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
+
 
 namespace GreaterGradesBackend.Api.Controllers
 {
@@ -46,6 +50,7 @@ namespace GreaterGradesBackend.Api.Controllers
             return Ok(new { Token = token });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -53,6 +58,34 @@ namespace GreaterGradesBackend.Api.Controllers
             return Ok(users);
         }
 
+        [Authorize]
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UpdateUserDto updateUserDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Check if the user is editing their own profile or is an InstitutionAdmin or higher
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            if (currentUserId != userId && (currentUserRole != "InstitutionAdmin" && currentUserRole != "Admin"))
+            {
+                return Forbid();
+            }
+
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        [Authorize]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserById(int userId)
         {
@@ -63,35 +96,6 @@ namespace GreaterGradesBackend.Api.Controllers
             }
 
             return Ok(user);
-        }
-
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UpdateUserDto updateUserDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
-            if (!result)
-            {
-                return NotFound();
-            }
-
-            return NoContent(); // 204 No Content
-        }
-
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUser(int userId)
-        {
-            var result = await _userService.DeleteUserAsync(userId);
-            if (!result)
-            {
-                return NotFound();
-            }
-
-            return NoContent(); // 204 No Content
         }
     }
 }

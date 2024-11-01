@@ -1,0 +1,66 @@
+.student-dashboard{
+    display: flex;
+}
+
+.student-sidebar{
+    width: 250px;
+    background-color: rgb(221, 215, 204);
+    padding: 20px;
+}
+
+.student-sidebar ul {
+    list-style: none;
+}
+
+.student-sidebar li {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 1.5rem;
+}
+
+.student-sidebar li:hover {
+    background-color: rgb(27, 131, 190);
+    color: white;
+}
+
+.student-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: rgb(65, 64, 64);
+    color: white;
+}
+
+.student-header .student-info{
+    display: flex;
+    align-items: center;
+}
+
+.student-content{
+    padding: 20px;
+}
+
+.student-tiles{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.student-dashboard-tile{
+    background-color: rgb(221, 215, 204);
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.student-dashboard-tile:hover{
+    background-color: rgb(163, 159, 150);
+}

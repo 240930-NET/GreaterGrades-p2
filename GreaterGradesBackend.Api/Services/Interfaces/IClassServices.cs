@@ -1,6 +1,7 @@
 using GreaterGradesBackend.Api.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GreaterGradesBackend.Domain.Entities;
 
 namespace GreaterGradesBackend.Services.Interfaces
 {
@@ -18,6 +19,10 @@ namespace GreaterGradesBackend.Services.Interfaces
         Task<bool> AddTeacherToClassAsync(int classId, int userId);
         
         Task<bool> UpdateClassAsync(int classId, UpdateClassDto updateClassDto);
+
+        Task<IEnumerable<Class>> GetClassesByInstitutionIdAsync(int IntitutionId);
+
+        
         
         Task<bool> DeleteClassAsync(int classId);
     }

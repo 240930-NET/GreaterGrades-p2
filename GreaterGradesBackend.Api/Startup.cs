@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+
 namespace GreaterGradesBackend.Api
 {
     public class Startup
@@ -31,33 +33,16 @@ namespace GreaterGradesBackend.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            /*services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
-            });*/
-
             services.AddDbContext<GreaterGradesBackendDbContext>(options =>
                 options.UseSqlServer("Server=localhost,1433;Database=GreaterGrades;User Id=sa;Password=NotPassword123!;TrustServerCertificate=True;"));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IClassService, ClassService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IGradeService, GradeService>();
             services.AddScoped<IInstitutionService, InstitutionService>();
-
-
-            // Register the password hasher
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-
-            // Configure JWT Authentication
             var jwtSection = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSettings>(jwtSection);
 
@@ -94,10 +79,35 @@ namespace GreaterGradesBackend.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "GreaterGradesBackend API",
                     Version = "v1"
+                });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
                 });
             });
         }

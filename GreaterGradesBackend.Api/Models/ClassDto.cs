@@ -6,6 +6,8 @@ namespace GreaterGradesBackend.Api.Models
     {
         public int ClassId { get; set; }
 
+        public int InstitutionId { get; set; }
+
         public string Subject { get; set; }
 
         public ICollection<UserDto> Students { get; set; }

@@ -27,5 +27,14 @@ namespace GreaterGradesBackend.Infrastructure.Repositories
                 .Include(c => c.Assignments)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Class>> GetClassesByInstitutionIdAsync(int institutionId) 
+        {
+            return await _context.Classes
+                .Include(c => c.Students)
+                .Include(c => c.Assignments)
+                .Where(c => c.InstitutionId == institutionId)
+                .ToListAsync();
+        }
     }
 }
