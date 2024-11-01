@@ -125,6 +125,9 @@ namespace GreaterGradesBackend.Services.Implementations
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
+            // Extracting and logging the role claim before creating the token
+            var roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

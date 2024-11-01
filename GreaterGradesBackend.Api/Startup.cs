@@ -71,6 +71,16 @@ namespace GreaterGradesBackend.Api
                     provider.GetRequiredService<IMapper>(),
                     provider.GetRequiredService<IPasswordHasher<User>>(),
                     jwtSettings));
+            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:5000") // We can change this line to allow whatever origin we need
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -131,7 +141,7 @@ namespace GreaterGradesBackend.Api
 
             app.UseRouting();
 
-            //app.UseCors("AllowAllOrigins");
+            app.UseCors("FrontendPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
