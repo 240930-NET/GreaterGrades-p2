@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  greater-grades-web-api:
+    build: .
+    container_name: greater-grades-web-api-container
+    image: greater-grades
+    environment:
+      - MSSQL_SA_PASSWORD=NotPassword123!
+    ports:
+      - "5000:80"
+    depends_on:
+      - greater-grades-sqlserver    
+  greater-grades-sqlserver:
+    container_name: greater-grades-sqlserver-container
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=NotPassword123!
+    ports:
+      - "1433:1433"
