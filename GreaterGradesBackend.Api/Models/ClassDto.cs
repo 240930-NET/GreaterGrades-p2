@@ -12,6 +12,8 @@ namespace GreaterGradesBackend.Api.Models
 
         public ICollection<UserDto> Students { get; set; }
 
+        public ICollection<UserDto> Teachers { get; set; }
+
         public ICollection<AssignmentDto> Assignments { get; set; }
     }
 }

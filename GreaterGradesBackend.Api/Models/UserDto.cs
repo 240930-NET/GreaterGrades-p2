@@ -9,7 +9,7 @@ namespace GreaterGradesBackend.Api.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public ICollection<int> ClassIds { get; set; }
-         public ICollection<int> TaughtClassIds { get; set; }
+        public ICollection<int> TaughtClassIds { get; set; }
         public Role Role { get; set; }
         public int InstitutionId { get; set; }
     }

@@ -16,6 +16,7 @@ namespace GreaterGradesBackend.Infrastructure.Repositories
         {
             return await _context.Users
                 .Include(u => u.Classes)
+                .Include(u => u.TaughtClasses)
                 .Include(u => u.Grades)
                 .ToListAsync();
         }
@@ -29,6 +30,7 @@ namespace GreaterGradesBackend.Infrastructure.Repositories
             return await _context.Users
                 .Include(u => u.Classes)
                 .Include(u => u.Grades)
+                .Include(u => u.TaughtClasses)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
