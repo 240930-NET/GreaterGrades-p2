@@ -1,16 +1,36 @@
 version: '3.9'
 
 services:
-  greater-grades-web-api:
-    build: .
-    container_name: greater-grades-web-api-container
-    image: greater-grades
+  greater-grades-react-app:
+    container_name: greater-grades-react-app
+    image: greater-grades-front-end
     environment:
-      - MSSQL_SA_PASSWORD=NotPassword123!
+      - CHOKIDAR_USEPOLLING=true  
+      - BROWSER=none
+      - NODE_ENV=development
+    build: 
+      context: ./UI
+      dockerfile: DockerFile_UI
+      target: development
+    volumes: 
+      - ./UI:/app
+      - /app/node_modules
     ports:
-      - "5000:80"
+      - 3000:3000
+
+  greater-grades-web-api:
+    container_name: greater-grades-web-api-container
+    image: greater-grades-back-end
+    build:
+      context: ./Api
+      dockerfile: DockerFile_API
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5555
+      MSSQL_SA_PASSWORD: NotPassword123!
     depends_on:
       - greater-grades-sqlserver    
+
   greater-grades-sqlserver:
     container_name: greater-grades-sqlserver-container
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -18,4 +38,4 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=NotPassword123!
     ports:
-      - "1433:1433"
+      - "1633:1433"
