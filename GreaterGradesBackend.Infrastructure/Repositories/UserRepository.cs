@@ -23,7 +23,11 @@ namespace GreaterGradesBackend.Infrastructure.Repositories
 
         public async Task<User> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _context.Users
+                .Include(u => u.Classes)
+                .Include(u => u.Grades)
+                .Include(u => u.TaughtClasses)
+                .FirstOrDefaultAsync(u => u.Username == username);
         }
         public async Task<User> GetUserWithDetailsAsync(int userId)
         {

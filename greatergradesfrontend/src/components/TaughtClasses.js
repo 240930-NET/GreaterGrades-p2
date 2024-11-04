@@ -1,16 +1,16 @@
+import { getStorageItem } from "../functions/functions";
 import Tiles from "./Tiles";
 
 const TaughtClasses = () => {
-    const storedUser = localStorage.getItem('currentUser');
-    const parsedUser = JSON.parse(storedUser);
+    const currentUser = getStorageItem('currentUser')
 
 
     return (
-        <div className="student-content">
+        <div className="dashboard-content">
             <div>
                 <h3>Taught Classes</h3>
-                <div className="student-tiles">
-                    <Tiles courseIds={parsedUser?.taughtClassIds} />
+                <div className="dashboard-tiles">
+                    <Tiles courseIds={currentUser?.taughtClassIds} />
                 </div>
             </div>
         </div>

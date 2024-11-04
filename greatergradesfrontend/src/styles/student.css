@@ -1,62 +1,26 @@
-.student-dashboard{
+.student-dashboard {
     display: flex;
-}
-
-.student-sidebar{
-    width: 250px;
-    background-color: rgb(221, 215, 204);
-    padding: 20px;
-}
-
-.student-sidebar ul {
-    list-style: none;
-}
-
-.student-sidebar li {
-    display: flex;
-    align-items: center;
-    margin: 15px 0;
-    font-size: 1.5rem;
-}
-
-.student-sidebar li:hover {
-    background-color: rgb(27, 131, 190);
-    color: white;
-}
-
-.student-sidebar-li-selected{
-    background-color: rgb(65, 64, 64);
+    height: 100vh;
+    background-color: #f0f2f5;
 }
 
 .student-body {
-    flex: 1;
     display: flex;
     flex-direction: column;
-}
-
-.student-header {
-    display: flex;
-    justify-content: space-between;
+    flex-grow: 1;
     padding: 20px;
-    background-color: rgb(65, 64, 64);
-    color: white;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
 }
 
-.student-header .student-info{
-    display: flex;
-    align-items: center;
-}
 
-.student-content{
+.content{
     padding: 20px;
 }
 
-.student-tiles{
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.student-dashboard-tile{
+.dashboard-tile{
     background-color: rgb(221, 215, 204);
     width: 200px;
     height: 150px;
@@ -65,6 +29,39 @@
     border-radius: 5px;
 }
 
-.student-dashboard-tile:hover{
-    background-color: rgb(163, 159, 150);
+.dashboard-sidebar-li-selected {
+    background-color: #e6f0fa;
+    color: #333;
+    border-left: 4px solid #4A90E2;
+    padding-left: 12px;
+}
+
+.dashboard-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.content-card {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .student-dashboard {
+        flex-direction: column;
+    }
+
+    .dashboard-sidebar {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .student-body {
+        padding: 10px;
+    }
 }

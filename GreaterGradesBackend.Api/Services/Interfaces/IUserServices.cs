@@ -12,5 +12,6 @@ namespace GreaterGradesBackend.Services.Interfaces
         Task<string> AuthenticateUserAsync(LoginDto loginDto);
         Task<bool> UpdateUserAsync(int userId, UpdateUserDto updateUserDto);
         Task<bool> DeleteUserAsync(int userId);
+        Task<UserDto> GetUserFromUsernameAsync(string username);
     }
 }

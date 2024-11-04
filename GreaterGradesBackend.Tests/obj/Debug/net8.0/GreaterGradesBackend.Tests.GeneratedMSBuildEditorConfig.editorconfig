@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GreaterGradesBackend.Tests
-build_property.ProjectDir = C:\Users\Rylan\Desktop\training\GreaterGrades-p2\GreaterGradesBackend.Tests\
+build_property.ProjectDir = C:\Users\William\revature\GreaterGradesBackend\GreaterGradesBackend.Tests\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

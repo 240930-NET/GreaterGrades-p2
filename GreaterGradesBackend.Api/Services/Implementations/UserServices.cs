@@ -73,6 +73,16 @@ namespace GreaterGradesBackend.Services.Implementations
             return _mapper.Map<UserDto>(user);
         }
 
+        public async Task<UserDto> GetUserFromUsernameAsync(string username)
+        {
+            var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
+            if (user == null)
+            {
+                return null; // Authentication failed
+            }
+            return _mapper.Map<UserDto>(user);
+        }
+
         public async Task<string> AuthenticateUserAsync(LoginDto loginDto)
         {
             var user = await _unitOfWork.Users.GetUserByUsernameAsync(loginDto.Username);

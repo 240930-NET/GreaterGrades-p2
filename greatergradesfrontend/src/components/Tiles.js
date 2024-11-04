@@ -1,39 +1,26 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useGetUsersClasses } from "../greatergradesapi/Classes";
+import forestImage from "../images/forest.jfif";
 
 const Tiles = ({ courseIds }) => {
-
-    const [courses, setCourses] = useState([])
-
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const responses = await Promise.all(
-                    courseIds.map(courseId => 
-                        fetch('http://localhost:5000/api/Classes/' + courseId, {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(res => res.json())
-                    )
-                )
-                setCourses(responses);
-            } catch {}
-        }
-        if (courseIds.length > 0) fetchCourses();
-
-    }, [courseIds])
+    const classes = useGetUsersClasses(courseIds);
 
     return (
-        <div>
-            {courses.map((course, index) => (
-                <div key={index} className="student-dashboard-tile">
-                    <p>{course.subject}</p>
-                </div>
+        <div className="tiles-container">
+            {classes.map((course, index) => (
+                <Link key={index} to="/Course" className="dashboard-tile-link">
+                    <div className="dashboard-tile">
+                        <h3 className="tile-title">{course.subject}</h3>
+                        <img src={forestImage} alt="Course placeholder" className="tile-image" />
+                        <div className="tile-footer">
+                            <p>{course.students?.length || 0} Students</p>
+                            <p>{course.teachers?.length || 0} Teachers</p>
+                        </div>
+                    </div>
+                </Link>
             ))}
         </div>
-    )
-
-}
+    );
+};
 
 export default Tiles;

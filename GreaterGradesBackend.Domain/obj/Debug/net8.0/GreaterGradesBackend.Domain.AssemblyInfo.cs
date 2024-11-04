@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GreaterGradesBackend.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+280c67ba48ac29ed1e836d6c6eeaee10718ccf3e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dfa4f37240947b848f613016ae768eb7b79b5c95")]
 [assembly: System.Reflection.AssemblyProductAttribute("GreaterGradesBackend.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GreaterGradesBackend.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -12,7 +12,7 @@ namespace GreaterGradesBackend.Domain.Entities
         public int ClassId { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(150)]
         public string Subject { get; set; }
 
         [ForeignKey("Institution")]
