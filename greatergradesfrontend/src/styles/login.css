@@ -28,7 +28,7 @@
 }
 
 .form-group input {
-    width: 100%;
+    width: 93%;
     padding: 0.75rem;
     border: 1px solid #495057;
     border-radius: 4px;
@@ -70,6 +70,17 @@ select {
     border: 1px solid #495057;
     border-radius: 4px;
     font-size: 1rem;
+    background-color: #6c757d;
+    color: #f8f9fa;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+select option {
     background-color: #6c757d;
     color: #f8f9fa;
 }

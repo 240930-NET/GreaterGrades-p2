@@ -17,15 +17,19 @@ export const useGetAllInstitutions = () => {
     useEffect(() => {
         const fetchInstitutions = async () => {
             try {
-                const response = await fetch(`${url}`, getCommonHeader(authToken));
+                const response = await fetch(`${url}`, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
                 const data = await response.json();
                 setInstitutions(data || []);
-            } catch {
-                console.error("Error fetching institutions")
+            } catch (error) {
+                console.error("Error fetching institutions:", error);
+                setInstitutions([]);
             }
         }
-        if (authToken) fetchInstitutions();
-    }, [authToken])
+        fetchInstitutions();
+    }, []);
+
     return institutions;
 }
 
@@ -122,3 +126,18 @@ export const useDeleteInstitution = (id) => {
         if (authToken && id) fetchDeleteInstitution();
     }, [authToken, id])
 }
+
+
+export const getAllInstitutionsAPI = async () => {
+    try {
+        const response = await fetch(`${url}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        return data || [];
+    } catch (error) {
+        console.error("Error fetching institutions:", error);
+        return [];
+    }
+};

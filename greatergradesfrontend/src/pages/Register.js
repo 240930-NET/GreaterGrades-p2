@@ -1,21 +1,30 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { registerAPI, loginAPI } from '../greatergradesapi/Auth';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../functions/UserContext";
+import { useGetAllInstitutions } from '../greatergradesapi/Institutions';
 
 function Register() {
     const { login } = useContext(UserContext);
+    const institutions = useGetAllInstitutions();
+    const [isLoading, setIsLoading] = useState(true);
 
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         firstName: '',
         lastName: '',
-        role: 0,
-        institutionId: 1 
+        role: '',
+        institutionId: ''
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (institutions.length > 0) {
+            setIsLoading(false);
+        }
+    }, [institutions]);
 
     const handleChange = (e) => {
         setFormData({
@@ -26,6 +35,10 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.institutionId) {
+            setError('Please select an institution');
+            return;
+        }
         try {
             const user = await registerAPI(
                 formData.username,
@@ -47,7 +60,7 @@ function Register() {
                 throw new Error(error)
             }
         } catch (err) {
-            console.alert(error);
+            console.error(error);
         }
     };
 
@@ -109,8 +122,35 @@ function Register() {
                             onChange={handleChange}
                             required
                         >
+                            <option value="">Select a role</option>
                             <option value={0}>Student</option>
                             <option value={1}>Teacher</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="institutionId">Institution*</label>
+                        <select
+                            id="institutionId"
+                            name="institutionId"
+                            value={formData.institutionId}
+                            onChange={handleChange}
+                            required
+                        >
+                            {isLoading ? (
+                                <option value="">Loading institutions...</option>
+                            ) : (
+                                <>
+                                    <option value="">Select an institution</option>
+                                    {institutions.map(institution => (
+                                        <option 
+                                            key={institution.institutionId} 
+                                            value={institution.institutionId}
+                                        >
+                                            {institution.name}
+                                        </option>
+                                    ))}
+                                </>
+                            )}
                         </select>
                     </div>
                     {error && <div className="error-message">{error}</div>}

@@ -21,9 +21,10 @@ namespace GreaterGradesBackend.Api.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InstitutionDto>>> GetAllInstitutions()
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<Institution>>> GetInstitutions()
         {
             var institutions = await _institutionService.GetAllInstitutionsAsync();
             return Ok(institutions);
