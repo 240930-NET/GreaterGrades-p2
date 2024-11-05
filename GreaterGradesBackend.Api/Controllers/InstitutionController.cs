@@ -23,8 +23,7 @@ namespace GreaterGradesBackend.Api.Controllers
 
         
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Institution>>> GetInstitutions()
+        public async Task<ActionResult<IEnumerable<InstitutionDto>>> GetInstitutions()
         {
             var institutions = await _institutionService.GetAllInstitutionsAsync();
             return Ok(institutions);
