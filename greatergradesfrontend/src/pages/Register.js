@@ -128,7 +128,7 @@ function Register() {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="institutionId">Institution*</label>
+                        <label htmlFor="institutionId">Institution</label>
                         <select
                             id="institutionId"
                             name="institutionId"
