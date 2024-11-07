@@ -19,8 +19,12 @@ const AddStudentToClassPopup = ({ onClose, courseId }) => {
         }
 
         try {
-            await addStudentToClass(courseId, selectedStudent, authToken);
-            onClose();
+            const result = await addStudentToClass(courseId, selectedStudent, authToken);
+            if (result === 'Added') {
+                onClose();
+            } else {
+                setError('Failed to add student to class.');
+            }
         } catch (err) {
             setError('Failed to add student to class.');
             console.error(err);

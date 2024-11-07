@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../functions/UserContext';
 import { getStorageItem } from "../functions/LocalStorage";
 import UserTile from './UserTile';
 import { RoleEnum } from "../enum/Role";
-import { deleteStudentFromClass } from "../greatergradesapi/Classes";
+import { deleteStudentFromClass, useGetClassById } from "../greatergradesapi/Classes";
 import AddStudentToClassPopup from './AddStudentToClassPopup';
 import AssignmentTile from './AssignmentTile';
 import AddAssignmentPopup from './AddAssignmentPopup';
@@ -16,33 +16,47 @@ const CourseContent = () => {
     const [isStudentPopupOpen, setIsStudentPopupOpen] = useState(false);
     const [isTeacherPopupOpen, setIsTeacherPopupOpen] = useState(false);
 
+    // Use the enhanced hook with refresh capability
+    const { course: courseData, refresh } = useGetClassById(currentCourse?.classId);
+
     const handleDeleteStudent = async (studentId) => {
         try {
-            await deleteStudentFromClass(currentCourse.userId, studentId, authToken);
-            console.log(`Student with ID ${studentId} removed from course.`);
+            const response = await deleteStudentFromClass(courseData.classId, studentId, authToken, refresh);
+            if (response === 'Deleted') {
+                refresh(); // Force immediate refresh
+            }
         } catch (error) {
-            console.error("Error removing student from class");
+            console.error("Error removing student from class:", error);
         }
     };
 
+    const handlePopupClose = () => {
+        setIsStudentPopupOpen(false);
+        setIsTeacherPopupOpen(false);
+        setIsAssignmentPopupOpen(false);
+        refresh(); // Force refresh when popup closes
+    };
+
     const isTeacherOrAdmin = currentUser.role > 0;
-    console.log("Perms?")
-    console.log(isTeacherOrAdmin)
+
+    if (!courseData) {
+        return <div>Loading course data...</div>;
+    }
 
     return (
         <div className="course-content">
-            <h3 className="course-title">{currentCourse?.subject}</h3>
+            <h3 className="course-title">{courseData.subject}</h3>
             <div className="course-body">
                 <div className="course-list-title">
-                    <p>Students: {currentCourse?.students?.length || 0}</p>
+                    <p>Students: {courseData.students?.length || 0}</p>
                     {isTeacherOrAdmin && (
                         <button onClick={() => setIsStudentPopupOpen(true)}>Add Student</button>
                     )}
                     <div className="course-list-line" />
                     <div className="course-list-entries">
-                        {currentCourse?.students.map((student, index) => (
+                        {courseData.students?.map((student) => (
                             <UserTile
-                                key={index}
+                                key={student.userId}
                                 firstName={student.firstName}
                                 lastName={student.lastName}
                                 role={RoleEnum[student?.role]}
@@ -53,15 +67,15 @@ const CourseContent = () => {
                     </div>
                 </div>
                 <div className="course-list-title">
-                    <p>Teachers: {currentCourse?.teachers?.length || 0}</p>
+                    <p>Teachers: {courseData.teachers?.length || 0}</p>
                     {currentUser.role > 1 && (
                         <button onClick={() => setIsTeacherPopupOpen(true)}>Add Teacher</button>
                     )}
                     <div className="course-list-line" />
                     <div className="course-list-entries">
-                        {currentCourse?.teachers.map((teacher, index) => (
+                        {courseData.teachers?.map((teacher, index) => (
                             <UserTile
-                                key={index}
+                                key={teacher.userId}
                                 firstName={teacher.firstName}
                                 lastName={teacher.lastName}
                                 role={RoleEnum[teacher?.role]}
@@ -70,15 +84,15 @@ const CourseContent = () => {
                     </div>
                 </div>
                 <div className="course-list-title">
-                    <p>Assignments: {currentCourse?.assignments?.length || 0}</p>
+                    <p>Assignments: {courseData.assignments?.length || 0}</p>
                     {isTeacherOrAdmin && (
                         <button onClick={() => setIsAssignmentPopupOpen(true)}>Add Assignment</button>
                     )}
                     <div className="course-list-line" />
                     <div className='course-list-entries'>
-                        {currentCourse?.assignments.map((assignment, index) => (
+                        {courseData.assignments?.map((assignment) => (
                             <AssignmentTile 
-                                key={index}
+                                key={assignment.assignmentId}
                                 assignment={assignment}
                             />
                         ))}
@@ -87,20 +101,20 @@ const CourseContent = () => {
             </div>
             {isStudentPopupOpen && (
                 <AddStudentToClassPopup 
-                    onClose={() => setIsStudentPopupOpen(false)} 
-                    courseId={currentCourse?.classId} 
+                    onClose={handlePopupClose}
+                    courseId={courseData.classId} 
                 />
             )}
             {isAssignmentPopupOpen && (
                 <AddAssignmentPopup
-                    onClose={() => setIsAssignmentPopupOpen(false)}
-                    classId={currentCourse?.classId}
+                    onClose={handlePopupClose}
+                    classId={courseData.classId}
                 />
             )}
             {isTeacherPopupOpen && (
                 <AddTeacherToClassPopup 
-                    onClose={() => setIsTeacherPopupOpen(false)} 
-                    courseId={currentCourse?.classId} 
+                    onClose={handlePopupClose}
+                    courseId={courseData.classId} 
                 />
             )}
         </div>
