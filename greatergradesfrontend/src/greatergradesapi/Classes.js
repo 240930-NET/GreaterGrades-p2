@@ -10,7 +10,7 @@ const getCommonHeader = (token) => ({
 });
 
 
-export const useGetAllClasses = () => {
+export const useGetAllClasses = (refreshTrigger) => {
     const [classes, setClasses] = useState([]);
     const { authToken } = useContext(UserContext);
 
@@ -24,8 +24,21 @@ export const useGetAllClasses = () => {
                 console.error("Failed to fetch classes")
             }
         }
-        if (authToken) fetchClasses();
-    }, [authToken])
+
+        if (authToken) {
+            fetchClasses();
+        }
+
+        // Polling interval of 300ms
+        const intervalId = setInterval(() => {
+            if (authToken) {
+                fetchClasses();
+            }
+        }, 300);
+
+        return () => clearInterval(intervalId);
+    }, [authToken, refreshTrigger])
+    
     return classes;
 }
 
@@ -190,8 +203,13 @@ export const deleteTeacherFromClass = async (id, teacherId, authToken) => {
 }
 
 
-export const deleteStudentFromClass = async (classId, studentId, authToken, refreshCallback) => {
+export const deleteStudentFromClass = async (classId, studentId, authToken, refreshCallback, optimisticUpdate) => {
     try {
+        // Call optimistic update immediately
+        if (optimisticUpdate) {
+            optimisticUpdate(classId, studentId);
+        }
+
         const response = await fetch(`${url}${classId}/students/${studentId}`, {
             method: 'DELETE',
             headers: {
@@ -234,7 +252,20 @@ export const useGetUsersClasses = (ids) => {
                 console.error("Error fetching classes")
             }
         }
-        if (authToken && ids?.length > 0) fetchCourses();
+
+        // Initial fetch
+        if (authToken && ids?.length > 0) {
+            fetchCourses();
+        }
+
+        // Set up faster polling interval
+        const intervalId = setInterval(() => {
+            if (authToken && ids?.length > 0) {
+                fetchCourses();
+            }
+        }, 200); // Reduced to 200ms for faster updates
+
+        return () => clearInterval(intervalId);
     }, [authToken, ids])
 
     return classes;

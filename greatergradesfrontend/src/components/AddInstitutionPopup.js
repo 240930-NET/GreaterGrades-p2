@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { addInstitution } from "../greatergradesapi/Institutions";
 import { UserContext } from "../functions/UserContext";
-import { setStorageItem } from '../functions/LocalStorage';
 import axios from "axios";
 
 const AddInstitutionPopup = ({ onClose }) => {
@@ -12,7 +11,7 @@ const AddInstitutionPopup = ({ onClose }) => {
     const [state, setState] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [validationError, setValidationError] = useState('');
-    const { authToken, currentUser, setCurrentUser } = useContext(UserContext);
+    const { authToken } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,7 +25,6 @@ const AddInstitutionPopup = ({ onClose }) => {
         }
 
         try {
-            console.log(process.env.REACT_APP_GEOAPIFY_API_KEY)
             const response = await axios.get(`https://api.geoapify.com/v1/geocode/search`, {
                 params: {
                     text: `${address}, ${city}, ${state}, ${postalCode}`,
@@ -34,16 +32,19 @@ const AddInstitutionPopup = ({ onClose }) => {
                 },
             });
 
-
             if (response.data.features.length === 0) {
                 setValidationError('Invalid address. Please check the details.');
                 return;
             }
 
             const fullAddress = `${address}, ${city}, ${state} ${postalCode}`;
-
-            await addInstitution(institutionName, fullAddress, authToken);
-            onClose();
+            const result = await addInstitution(institutionName, fullAddress, authToken);
+            
+            if (result) {
+                onClose(); // This will trigger the refresh in parent
+            } else {
+                setError('Failed to add institution.');
+            }
         } catch (error) {
             setValidationError('Address validation failed. Please try again.');
             console.error(error);

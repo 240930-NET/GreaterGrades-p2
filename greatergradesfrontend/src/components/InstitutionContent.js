@@ -5,10 +5,16 @@ import InstitutionTile from "./InstitutionTile";
 
 const InstitutionContent = () => {
     const { currentUser } = useContext(UserContext);
-    const[isAddPopupOpen, setAddPopupOpen] = useState(false);
+    const [isAddPopupOpen, setAddPopupOpen] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const handleAddInstitutionClick = () => {
         setAddPopupOpen(true);
+    };
+
+    const handlePopupClose = () => {
+        setAddPopupOpen(false);
+        setRefreshTrigger(prev => prev + 1);
     };
 
     return (
@@ -20,10 +26,13 @@ const InstitutionContent = () => {
                 </button>
             </div>
             <div className="dashboard-tiles">
-                <InstitutionTile />
+                <InstitutionTile refreshTrigger={refreshTrigger} />
             </div>
             {isAddPopupOpen && (
-                <AddInstitutionPopup onClose={() => setAddPopupOpen(false)} institutionId={currentUser?.institutionId} />
+                <AddInstitutionPopup 
+                    onClose={handlePopupClose} 
+                    institutionId={currentUser?.institutionId} 
+                />
             )}
         </div>
     )

@@ -10,7 +10,7 @@ const getCommonHeader = (token) => ({
 });
 
 
-export const useGetAllInstitutions = (shouldRefresh) => {
+export const useGetAllInstitutions = (refreshTrigger) => {
     const [institutions, setInstitutions] = useState([])
     const { authToken } = useContext(UserContext);
 
@@ -24,8 +24,21 @@ export const useGetAllInstitutions = (shouldRefresh) => {
                 console.error("Error fetching institutions")
             }
         }
-        if (authToken) fetchInstitutions();
-    }, [authToken, shouldRefresh])
+
+        if (authToken) {
+            fetchInstitutions();
+        }
+
+        // Reduced polling interval to 300ms for faster updates
+        const intervalId = setInterval(() => {
+            if (authToken) {
+                fetchInstitutions();
+            }
+        }, 300);
+
+        return () => clearInterval(intervalId);
+    }, [authToken, refreshTrigger]);
+
     return institutions;
 }
 
