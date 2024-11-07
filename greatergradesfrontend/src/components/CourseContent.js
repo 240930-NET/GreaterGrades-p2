@@ -3,7 +3,7 @@ import { UserContext } from '../functions/UserContext';
 import { getStorageItem } from "../functions/LocalStorage";
 import UserTile from './UserTile';
 import { RoleEnum } from "../enum/Role";
-import { deleteStudentFromClass, useGetClassById } from "../greatergradesapi/Classes";
+import { deleteStudentFromClass, deleteTeacherFromClass, useGetClassById } from "../greatergradesapi/Classes";
 import AddStudentToClassPopup from './AddStudentToClassPopup';
 import AssignmentTile from './AssignmentTile';
 import AddAssignmentPopup from './AddAssignmentPopup';
@@ -27,6 +27,17 @@ const CourseContent = () => {
             }
         } catch (error) {
             console.error("Error removing student from class:", error);
+        }
+    };
+
+    const handleDeleteTeacher = async (teacherId) => {
+        try {
+            const response = await deleteTeacherFromClass(courseData.classId, teacherId, authToken, refresh);
+            if (response === 'Deleted') {
+                refresh(); // Force immediate refresh
+            }
+        } catch (error) {
+            console.error("Error removing teacher from class:", error);
         }
     };
 
@@ -79,6 +90,8 @@ const CourseContent = () => {
                                 firstName={teacher.firstName}
                                 lastName={teacher.lastName}
                                 role={RoleEnum[teacher?.role]}
+                                showDelete={currentUser.role > 1}
+                                onDelete={() => handleDeleteTeacher(teacher.userId)}
                             />
                         ))}
                     </div>
