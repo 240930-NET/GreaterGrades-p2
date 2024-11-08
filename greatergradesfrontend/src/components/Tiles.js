@@ -55,7 +55,7 @@ const Tiles = ({ courseIds, setSelectedItem }) => {
                             <p>{course.teachers?.length || 0} Teachers</p>
                             {currentUser?.role > 1 && (
                                 <button 
-                                    className="delete-button"
+                                    className="delete-icon"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleDeleteCourse(course.classId);

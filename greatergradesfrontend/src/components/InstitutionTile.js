@@ -38,10 +38,10 @@ const InstitutionTile = ({institution, toggleTrigger}) => {
                 <h3 className="tile-title">{institutionReal?.name}</h3>
                 <img src={forestImage} alt="Course placeholder" className="tile-image" />
                 <div className="tile-footer">
-                    <button onClick={() => handleRemoveInstitutionClick(institutionReal?.institutionId)}>
+                    <button className="remove-button" onClick={() => handleRemoveInstitutionClick(institutionReal?.institutionId)}>
                         Remove
                     </button>
-                    <button onClick={() => handleUpdateInstitutionClick(institutionReal?.institutionId)}>
+                    <button className="update-button" onClick={() => handleUpdateInstitutionClick(institutionReal?.institutionId)}>
                         Update
                     </button>
                 </div>

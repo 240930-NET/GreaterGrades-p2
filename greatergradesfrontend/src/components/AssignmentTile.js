@@ -4,8 +4,7 @@ import { UserContext } from "../functions/UserContext";
 import { deleteAssignment, useGetAllAssignments } from "../greatergradesapi/Assignment";
 import UpdateAssignmentPopup from "./UpdateAssignmentPopup";
 
-const AssignmentTile = ({ assignment }) => {
-
+const AssignmentTile = ({ assignment, onDelete, onUpdate }) => {
     const { currentUser, authToken } = useContext(UserContext);
     const [popupOpen, setPopupOpen] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -15,47 +14,69 @@ const AssignmentTile = ({ assignment }) => {
     const grade = grades?.filter(grade => grade.assignmentId === assignment.assignmentId);
     const newAssignment = assignments?.find(assign => assign.assignmentId === assignment?.assignmentId);
 
-    useEffect (() => {
-
-    }, [refresh])
-
-    const handleRemoveClick = (id) => {
-        deleteAssignment(id, authToken)
-        setRefresh(prev => !prev);
-    }
+    useEffect(() => {
+    }, [refresh]);
 
     const handleUpdateClick = () => {
         setPopupOpen(true);
-    }
+    };
 
     const handleClose = () => {
         setPopupOpen(false);
         setRefresh(prev => !prev);
-    }
+        if (onUpdate) {
+            onUpdate();
+        }
+    };
+
+    const handleDeleteClick = async () => {
+        try {
+            const result = await deleteAssignment(assignment.assignmentId, authToken);
+            if (result === 'Deleted') {
+                if (onDelete) {
+                    await onDelete(assignment.assignmentId);
+                }
+                if (onUpdate) {
+                    onUpdate();
+                }
+            }
+        } catch (error) {
+            console.error("Error deleting assignment:", error);
+        }
+    };
+    
 
     return (
         <div className="user-tile">
             <h4 className="user-name">{newAssignment?.name}</h4>
             <p className="user-role">{grade[0]?.score}/{newAssignment?.maxScore}</p>
-            {currentUser?.role !== 0 ?
+            {currentUser?.role !== 0 && (
                 <div>
                     <div>
-                        <button onClick={() => handleRemoveClick(newAssignment?.assignmentId)}>Remove</button>
-                        <button onClick={() => handleUpdateClick()}>Update</button>
+                        <button 
+                            className="delete-icon"
+                            onClick={handleDeleteClick}
+                        >
+                            🗑️
+                        </button>
+                        <button 
+                            className="delete-icon"
+                            onClick={handleUpdateClick}
+                        >
+                            ✏️
+                        </button>
                     </div>
                     {popupOpen && (
                         <UpdateAssignmentPopup 
-                        onClose={() => handleClose()}
-                        id={newAssignment?.assignmentId}
-                        classId={newAssignment?.classId}
+                            onClose={handleClose}
+                            id={newAssignment?.assignmentId}
+                            classId={newAssignment?.classId}
                         />
                     )}
                 </div>
-            :
-                <div />
-            }
-            
+            )}
         </div>
-    )
-}
+    );
+};
+
 export default AssignmentTile;
