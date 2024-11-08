@@ -11,7 +11,7 @@ import AddTeacherToClassPopup from './AddTeacherToClassPopup';
 
 const AddTile = ({ onClick, label }) => (
     <div className="add-tile" onClick={onClick}>
-        <button className="add-icon">➕</button>
+        <button className="add-icon">╋</button>
         <span>Add {label}</span>
     </div>
 );
