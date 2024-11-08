@@ -117,7 +117,7 @@ const CourseContent = () => {
         fetchCourseData(); // Refresh data when popup closes
     };
 
-    const isTeacherOrAdmin = currentUser.role > 0;
+    const isTeacherOrAdmin = currentUser?.role >= 1;
 
     if (!courseData) {
         return <div>Loading course data...</div>;
@@ -186,6 +186,7 @@ const CourseContent = () => {
                                 assignment={assignment}
                                 onDelete={handleDeleteAssignment}
                                 onUpdate={fetchCourseData}
+                                isTeacherOrAdmin={isTeacherOrAdmin}
                             />
                         ))}
                         {isTeacherOrAdmin && (

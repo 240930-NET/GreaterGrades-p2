@@ -4,7 +4,7 @@ import { UserContext } from "../functions/UserContext";
 import { deleteAssignment, useGetAllAssignments } from "../greatergradesapi/Assignment";
 import UpdateAssignmentPopup from "./UpdateAssignmentPopup";
 
-const AssignmentTile = ({ assignment, onDelete, onUpdate }) => {
+const AssignmentTile = ({ assignment, onDelete, onUpdate, isTeacherOrAdmin }) => {
     const { currentUser, authToken } = useContext(UserContext);
     const [popupOpen, setPopupOpen] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -50,7 +50,7 @@ const AssignmentTile = ({ assignment, onDelete, onUpdate }) => {
         <div className="user-tile">
             <h4 className="user-name">{newAssignment?.name || assignment.name}</h4>
             <p className="user-role">{grade[0]?.score}/{newAssignment?.maxScore || assignment.maxScore}</p>
-            {currentUser?.role !== 0 && (
+            {isTeacherOrAdmin && (
                 <div>
                     <div>
                         <button 
