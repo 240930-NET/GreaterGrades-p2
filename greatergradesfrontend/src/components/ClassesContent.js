@@ -20,7 +20,7 @@ const ClassesContent = ({setSelectedItem}) => {
 
     const handlePopupClose = () => {
         setPopupOpen(false);
-        
+        setRefreshTrigger((prev) => prev + 1);
     };
 
     return (
