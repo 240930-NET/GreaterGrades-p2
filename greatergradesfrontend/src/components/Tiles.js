@@ -16,7 +16,6 @@ const Tiles = ({ courseIds, setSelectedItem }) => {
 
     const clickOnCourse = (course) => {
         setStorageItem('currentCourse', course);
-        console.log("setSelectedItem:", setSelectedItem);
         setSelectedItem('course info');
     };
 

@@ -29,7 +29,6 @@ const AddClassPopup = ({ onClose, institutionId }) => {
             onClose();
         } else {
             setError('Failed to create class.');
-            console.log(course)
         }
     };
     

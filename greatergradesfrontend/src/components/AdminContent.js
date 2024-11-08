@@ -9,7 +9,6 @@ const AdminContent = ({setSelectedItem}) => {
     const { currentUser } = useContext(UserContext);
     const allClasses = useGetAllClasses();
     const allInstitutions = useGetAllInstitutions();
-    console.log(allInstitutions)
     const classIds = allClasses.flatMap(course => course.classId);
     
     return (

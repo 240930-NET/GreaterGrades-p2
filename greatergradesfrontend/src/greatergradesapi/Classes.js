@@ -45,7 +45,6 @@ export const addClass = async (subject, institutionId, authToken) => {
             body: JSON.stringify({ subject, institutionId })
         });
         if (!response.ok) throw new Error("Failed to add class");
-        console.log(response)
         return await response.json();
     } catch (error) {
         console.error("Error adding class:", error);
