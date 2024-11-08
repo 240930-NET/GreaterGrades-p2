@@ -222,9 +222,10 @@ var assemblies = [
     "name": "GreaterGradesBackend.Api",
     "classes": [
       { "name": "GreaterGradesBackend.Services.Implementations.AssignmentService", "rp": "GreaterGradesBackend.Api_AssignmentService.html", "cl": 42, "ucl": 20, "cal": 62, "tl": 109, "cb": 8, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "GreaterGradesBackend.Services.Implementations.ClassService", "rp": "GreaterGradesBackend.Api_ClassService.html", "cl": 85, "ucl": 4, "cal": 89, "tl": 141, "cb": 20, "tb": 24, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "GreaterGradesBackend.Services.Implementations.GradeService", "rp": "GreaterGradesBackend.Api_GradeService.html", "cl": 0, "ucl": 45, "cal": 45, "tl": 80, "cb": 0, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "GreaterGradesBackend.Services.Implementations.UserService", "rp": "GreaterGradesBackend.Api_UserService.html", "cl": 0, "ucl": 76, "cal": 76, "tl": 135, "cb": 0, "tb": 14, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "GreaterGradesBackend.Services.Implementations.ClassService", "rp": "GreaterGradesBackend.Api_ClassService.html", "cl": 91, "ucl": 35, "cal": 126, "tl": 192, "cb": 22, "tb": 38, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "GreaterGradesBackend.Services.Implementations.GradeService", "rp": "GreaterGradesBackend.Api_GradeService.html", "cl": 35, "ucl": 8, "cal": 43, "tl": 86, "cb": 6, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "GreaterGradesBackend.Services.Implementations.InstitutionService", "rp": "GreaterGradesBackend.Api_InstitutionService.html", "cl": 41, "ucl": 0, "cal": 41, "tl": 78, "cb": 6, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "GreaterGradesBackend.Services.Implementations.UserService", "rp": "GreaterGradesBackend.Api_UserService.html", "cl": 50, "ucl": 38, "cal": 88, "tl": 154, "cb": 9, "tb": 20, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
   {
     "name": "GreaterGradesBackend.Common",
@@ -245,9 +246,17 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
+      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
+      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "GreaterGradesBackend.Api", "class": "GreaterGradesBackend.Services.Implementations.ClassService", "reportPath": "GreaterGradesBackend.Api_ClassService.html", "methodName": "RemoveStudentFromClassAsync()", "methodShortName": "RemoveStudentFromClassAsync()", "fileIndex": 0, "line": 161,
+    "metrics": [
+      { "value": 43.67, "exceeded": true },
+      { "value": 10, "exceeded": false },
+    ]},
 ];
 
 var branchCoverageAvailable = true;

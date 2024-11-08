@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.11560000000000001" branch-rate="0.1338" version="1.9" timestamp="1731029077" lines-covered="322" lines-valid="2784" branches-covered="49" branches-valid="366">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="0.11560000000000001" branch-rate="0.1338" version="1.9" timestamp="1731029108" lines-covered="322" lines-valid="2784" branches-covered="49" branches-valid="366">
   <sources>
     <source>C:\Users\William\revature\GreaterGradesBackend\</source>
   </sources>
