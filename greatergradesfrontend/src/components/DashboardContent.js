@@ -9,18 +9,19 @@ const DashboardContent = ({setSelectedItem}) => {
 
     // if user is student display this
     if (currentUser?.role === 0){
-        if (currentUser?.taughtClassIds < 0) {
+        if (currentUser?.taughtClassIds < 1) {
             return (
                 <div className="student-content">
                     <div>
                         <h3>Enrolled Classes</h3>
                         <div className="student-tiles">
-                            <Tiles setSelectedItem={setSelectedItem}/>
+                            <Tiles courseIds={currentUser?.classIds} setSelectedItem={setSelectedItem}/>
                         </div>
                     </div>
                 </div>
             )
         } else {
+
             return (
                 <div className="student-content">
                     <div>
