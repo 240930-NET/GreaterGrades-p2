@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../functions/UserContext";
 import UpdateInstitutionPopup from "./UpdateInstitutionPopup";
 
-const InstitutionTile = ({ institution, onRefresh }) => {
+const InstitutionTile = ({ institution, toggleTrigger }) => {
     const { authToken } = useContext(UserContext);
     const [popupInstitutionId, setPopupInstitutionId] = useState(null);
 
@@ -12,7 +12,7 @@ const InstitutionTile = ({ institution, onRefresh }) => {
         try {
             const result = await deleteInstitution(id, authToken);
             if (result === 'Deleted') {
-                onRefresh();
+                toggleTrigger();
             }
         } catch (error) {
             console.error("Error deleting institution:", error);
@@ -25,7 +25,7 @@ const InstitutionTile = ({ institution, onRefresh }) => {
 
     const handlePopupClose = () => {
         setPopupInstitutionId(null);
-        onRefresh();
+        toggleTrigger();
     };
 
     return (
