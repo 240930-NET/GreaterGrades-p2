@@ -34,8 +34,7 @@ const Dashboard = () => {
                             assignments: course.assignments || []
                         }))
                     },
-                    { id: 'taught classes', label: 'Taught Classes' },
-                    { id: 'course info', label: 'Course Info' },
+                    { id: 'taught classes', label: 'Taught Classes' }
                 );
             } else {
                 newSidebarItems.push(
@@ -49,8 +48,7 @@ const Dashboard = () => {
                             label: course.subject,
                             assignments: course.assignments || []
                         }))
-                    },
-                    { id: 'course info', label: 'Course Info' },
+                    }
                 );
             }
         }
@@ -69,15 +67,13 @@ const Dashboard = () => {
                             assignments: course.assignments || []
                         }))
                     },
-                    { id: 'taught classes', label: 'Taught Classes' },
-                    { id: 'course info', label: 'Course Info' },
+                    { id: 'taught classes', label: 'Taught Classes' }
                 );
             } else {
                 newSidebarItems.push(
                     { id: 'dashboard', label: 'Dashboard' },
                     { id: 'profile', label: 'Profile' },
-                    { id: 'taught classes', label: 'Taught Classes' },
-                    { id: 'course info', label: 'Course Info' },
+                    { id: 'taught classes', label: 'Taught Classes' }
                 );
             }
         }
@@ -86,8 +82,7 @@ const Dashboard = () => {
             newSidebarItems.push(
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'profile', label: 'Profile' },
-                { id: 'classes', label: 'Classes' },
-                { id: 'course info', label: 'Course Info' },
+                { id: 'classes', label: 'Classes' }
             );
         }
 
@@ -96,8 +91,7 @@ const Dashboard = () => {
                 { id: 'dashboard', label: 'Dashboard'},
                 { id: 'profile', label: 'Profile' },
                 { id: 'classes', label: 'Classes' },
-                { id: 'institutions', label: 'Institutions' },
-                { id: 'course info', label: 'Course Info' },
+                { id: 'institutions', label: 'Institutions' }
             );
         }
 

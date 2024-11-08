@@ -13,7 +13,7 @@ const CourseContent = () => {
 
     const handleDeleteStudent = async (studentId) => {
         try {
-            await deleteStudentFromClass(currentCourse.userId, studentId, authToken);
+            await deleteStudentFromClass(currentCourse.classId, studentId, authToken);
             console.log(`Student with ID ${studentId} removed from course.`);
         } catch (error) {
             console.error("Error removing student from class");

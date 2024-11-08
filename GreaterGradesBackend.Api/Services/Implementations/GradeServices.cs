@@ -48,13 +48,13 @@ namespace GreaterGradesBackend.Services.Implementations
             return _mapper.Map<GradeDto>(grade);
         }
 
-        public async Task<GradeDto> CreateGradeAsync(CreateGradeDto createGradeDto)
+        /*public async Task<GradeDto> CreateGradeAsync(CreateGradeDto createGradeDto)
         {
             var grade = _mapper.Map<Grade>(createGradeDto);
             await _unitOfWork.Grades.AddAsync(grade);
             await _unitOfWork.CompleteAsync();
             return _mapper.Map<GradeDto>(grade);
-        }
+        }*/
 
         public async Task<bool> UpdateGradeAsync(int gradeId, UpdateGradeDto updateGradeDto)
         {
