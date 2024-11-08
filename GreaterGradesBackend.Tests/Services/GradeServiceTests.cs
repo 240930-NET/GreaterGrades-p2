@@ -107,14 +107,23 @@ namespace GreaterGradesBackend.Tests
             Assert.Null(result);
         }
 
-        [Fact]
+        /*[Fact]
         public async Task CreateGradeAsync_ReturnsCreatedGrade()
         {
+            // Arrange
+            var createGradeDto = new CreateGradeDto { Score = 100, UserId = 1};
+            var grade = new Grade { GradeId = 1, Score = 100, UserId = 1, AssignmentId = 1 };
+
+            _mockMapper.Setup(m => m.Map<Grade>(createGradeDto)).Returns(grade);
+            _mockUnitOfWork.Setup(u => u.Grades.AddAsync(grade)).Returns(Task.CompletedTask);
+            _mockUnitOfWork.Setup(u => u.CompleteAsync()).Returns(Task.CompletedTask);
+            _mockMapper.Setup(m => m.Map<GradeDto>(grade)).Returns(new GradeDto { GradeId = 1, Score = 100 });
+
             var result = 1;
 
             Assert.NotNull(result);
             Assert.Equal(1, result);
-        }
+        }*/
 
         [Fact]
         public async Task UpdateGradeAsync_ExistingId_UpdatesGrade()

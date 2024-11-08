@@ -29,6 +29,7 @@ export const useGetGrades = (refresh) => {
 }
 
 
+
 export const getGrade = async (id, authToken) => {
     try {
         const response = await fetch(`${url}${id}`, getCommonHeader(authToken));
@@ -40,27 +41,20 @@ export const getGrade = async (id, authToken) => {
 }
 
 
-export const useUpdateGrade = (id, score, gradingStatus) => {
-    const { authToken } = useContext(UserContext);
-
-    useEffect(() => {
-        const fetchUpdateGrade = async () => {
-            try {
-                const response = await fetch(`${url}${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ score, gradingStatus })
-                })
-                if (response.status !== 204) throw new Error();
-            } catch {
-                console.error('Failed to update user');
-            }
-        }
-        if (authToken && id && score && gradingStatus) fetchUpdateGrade();
-    }, [authToken, id, score, gradingStatus])
+export const updateGrade = async (id, score, gradingStatus, authToken) => {
+    try {
+        const response = await fetch(`${url}${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ score, gradingStatus })
+        })
+        if (response.status !== 204) throw new Error();
+    } catch {
+        console.error('Failed to update user');
+    }
 }
 
 

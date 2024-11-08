@@ -118,7 +118,7 @@ export const useGetUserById = (id) => {
         if (authToken && id) fetchUserById();
     }, [authToken, id]);
     return (user);
-}
+};
 
 
 export const useGetUserByUsername = (username) => {
@@ -140,6 +140,14 @@ export const useGetUserByUsername = (username) => {
     return (user);
 }
 
+export const getUserById = async (id, authToken) => {
+    try{
+        const response = await fetch(`${url}id/${id}`, getCommonHeader(authToken));
+        return await response.json();
+    } catch (error){
+        return null;
+    };
+};
 
 
 //// Non hook functions for handling login process
