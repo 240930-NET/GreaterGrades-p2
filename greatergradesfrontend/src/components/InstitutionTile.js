@@ -5,7 +5,6 @@ import { UserContext } from "../functions/UserContext";
 import UpdateInstitutionPopup from "./UpdateInstitutionPopup";
 
 const InstitutionTile = ({institution, toggleTrigger}) => {
-    console.log(toggleTrigger)
     const { authToken } = useContext(UserContext);
     const [popupInstitutionId, setPopupInstitutionId] = useState(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -13,36 +12,51 @@ const InstitutionTile = ({institution, toggleTrigger}) => {
 
     const institutionReal = institutions.find(inst => inst.institutionId === institution?.institutionId);
 
-    // Set up polling for institutions
     useEffect(() => {
-    }, [refreshTrigger]);
+        const handleClickOutside = (event) => {
+            if (popupInstitutionId && !event.target.closest('.popup')) {
+                setPopupInstitutionId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [popupInstitutionId]);
 
     const handleRemoveInstitutionClick = async (id) => {
         await deleteInstitution(id, authToken);
         setRefreshTrigger(prev => prev + 1);
         toggleTrigger();
-    }
+    };
 
     const handleUpdateInstitutionClick = (id) => {
         setPopupInstitutionId(prevId => prevId === id ? null : id);
-    }
+    };
 
     const handlePopupClose = () => {
         setPopupInstitutionId(null);
         setRefreshTrigger(prev => prev + 1);
-    }
+    };
 
     return (
-        <div className="tiles-container">
-            <div key={institutionReal?.institutionId} className="dashboard-tile">
+        <div className="dashboard-tile-link">
+            <div className="dashboard-tile">
                 <h3 className="tile-title">{institutionReal?.name}</h3>
-                <img src={forestImage} alt="Course placeholder" className="tile-image" />
+                <img src={forestImage} alt="Institution placeholder" className="tile-image" />
                 <div className="tile-footer">
-                    <button className="remove-button" onClick={() => handleRemoveInstitutionClick(institutionReal?.institutionId)}>
-                        Remove
+                    <button 
+                        className="delete-icon"
+                        onClick={() => handleRemoveInstitutionClick(institutionReal?.institutionId)}
+                    >
+                        🗑️
                     </button>
-                    <button className="update-button" onClick={() => handleUpdateInstitutionClick(institutionReal?.institutionId)}>
-                        Update
+                    <button 
+                        className="delete-icon"
+                        onClick={() => handleUpdateInstitutionClick(institutionReal?.institutionId)}
+                    >
+                        ✏️
                     </button>
                 </div>
                 {popupInstitutionId === institutionReal?.institutionId && (
@@ -53,7 +67,7 @@ const InstitutionTile = ({institution, toggleTrigger}) => {
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default InstitutionTile;

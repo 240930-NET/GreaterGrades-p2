@@ -48,8 +48,8 @@ const AssignmentTile = ({ assignment, onDelete, onUpdate }) => {
 
     return (
         <div className="user-tile">
-            <h4 className="user-name">{newAssignment?.name}</h4>
-            <p className="user-role">{grade[0]?.score}/{newAssignment?.maxScore}</p>
+            <h4 className="user-name">{newAssignment?.name || assignment.name}</h4>
+            <p className="user-role">{grade[0]?.score}/{newAssignment?.maxScore || assignment.maxScore}</p>
             {currentUser?.role !== 0 && (
                 <div>
                     <div>
@@ -67,10 +67,10 @@ const AssignmentTile = ({ assignment, onDelete, onUpdate }) => {
                         </button>
                     </div>
                     {popupOpen && (
-                        <UpdateAssignmentPopup 
+                        <UpdateAssignmentPopup
                             onClose={handleClose}
-                            id={newAssignment?.assignmentId}
-                            classId={newAssignment?.classId}
+                            id={newAssignment?.assignmentId || assignment.assignmentId}
+                            classId={newAssignment?.classId || assignment.classId}
                         />
                     )}
                 </div>

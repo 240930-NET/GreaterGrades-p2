@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
 import AddInstitutionPopup from "./AddInstitutionPopup";
 import InstitutionTile from "./InstitutionTile";
@@ -28,9 +28,13 @@ const InstitutionContent = () => {
                     Add New Institution
                 </button>
             </div>
-            <div className="dashboard-tiles">
+            <div className="tiles-container">
                 {institutions.map((institution) => (
-                    <InstitutionTile key={institution.institutionId} institution={institution} toggleTrigger={toggleTrigger} />
+                    <InstitutionTile 
+                        key={institution.institutionId} 
+                        institution={institution} 
+                        toggleTrigger={toggleTrigger} 
+                    />
                 ))}
             </div>
             {isAddPopupOpen && (
@@ -39,7 +43,7 @@ const InstitutionContent = () => {
                 />
             )}
         </div>
-    )
-}
+    );
+};
 
 export default InstitutionContent;

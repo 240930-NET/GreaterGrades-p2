@@ -21,12 +21,14 @@ const AdminContent = ({setSelectedItem}) => {
             </div>
                 :
             <div>
-                <h3>Classes</h3>
+                <h3>Classes:</h3>
                 <Tiles courseIds={classIds} setSelectedItem={setSelectedItem}/>
-                <h3>Institutions</h3>
-                {allInstitutions.map(institution => (
-                    <InstitutionTile institution={institution} />
-                ))}
+                <h3>Institutions:</h3>
+                <div className="tiles-container">
+                    {allInstitutions.map(institution => (
+                        < InstitutionTile institution={institution} />
+                    ))}
+                </div>
             </div>
             }
         </div>

@@ -25,6 +25,9 @@
     transition: background-color 0.3s, color 0.3s;
     color: #E0E0E0;
     position: relative;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Ensures no overflow */
+    text-overflow: ellipsis; /* Adds '...' if text overflows */
 }
 
 .dashboard-sidebar ul li:hover {
@@ -61,6 +64,9 @@
     cursor: pointer;
     transition: background-color 0.3s;
     color: #B8B8B8;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dashboard-sidebar li ul li.dashboard-sidebar-assignment {
@@ -68,6 +74,9 @@
     background-color: #505050;
     padding: 6px 10px;
     color: #D0D0D0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dashboard-sidebar li ul li:hover {

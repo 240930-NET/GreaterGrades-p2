@@ -42,6 +42,7 @@ const AddClassPopup = ({ onClose, institutionId }) => {
                     <div>
                         <label htmlFor="subject">Class Subject:</label>
                         <input
+                            className="subject"
                             type="text"
                             id="subject"
                             value={subject}

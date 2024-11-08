@@ -1,8 +1,12 @@
 .tiles-container {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
+    justify-content: center;
+    width: 100%;
+    
 }
 
 .dashboard-tile-link {
@@ -12,11 +16,12 @@
     border: none;
     cursor: pointer;
     padding: 0;
+    flex: 0 0 auto;
 }
 
 .dashboard-tile {
     background-color: #f7f9fc;
-    width: 200px;
+    width: 250px;
     height: 280px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -25,6 +30,7 @@
     justify-content: space-between;
     padding: 15px;
     transition: transform 0.3s, box-shadow 0.3s;
+    margin: 0;
 }
 
 .dashboard-tile:hover {
@@ -92,9 +98,3 @@
     background-color: #3B5A8E;
 }
 
-.action-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-}

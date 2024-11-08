@@ -25,7 +25,7 @@ const UpdateAssignmentPopup = ({ onClose, id, classId }) => {
                 <h2>Update Assignment</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="assignmentName">Assignment Name:</label>
+                        <label htmlFor="assignmentName">Assignment Name:</label> 
                         <input
                             type="text"
                             id="assignmentName"
