@@ -1,12 +1,15 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../functions/UserContext";
 import AddInstitutionPopup from "./AddInstitutionPopup";
 import InstitutionTile from "./InstitutionTile";
+import { useGetAllInstitutions } from "../greatergradesapi/Institutions";
 
 const InstitutionContent = () => {
     const { currentUser } = useContext(UserContext);
     const [isAddPopupOpen, setAddPopupOpen] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const institutions = useGetAllInstitutions(refreshTrigger);
+    const toggleTrigger = () => setRefreshTrigger(prev => prev + 1);
 
     const handleAddInstitutionClick = () => {
         setAddPopupOpen(true);
@@ -26,12 +29,13 @@ const InstitutionContent = () => {
                 </button>
             </div>
             <div className="dashboard-tiles">
-                <InstitutionTile refreshTrigger={refreshTrigger} />
+                {institutions.map((institution) => (
+                    <InstitutionTile key={institution.institutionId} institution={institution} toggleTrigger={toggleTrigger} />
+                ))}
             </div>
             {isAddPopupOpen && (
                 <AddInstitutionPopup 
-                    onClose={handlePopupClose} 
-                    institutionId={currentUser?.institutionId} 
+                    onClose={handlePopupClose}  
                 />
             )}
         </div>

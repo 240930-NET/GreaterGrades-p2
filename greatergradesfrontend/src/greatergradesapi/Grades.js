@@ -9,7 +9,7 @@ const getCommonHeader = (token) => ({
     },
 });
 
-export const useGetGrades = () => {
+export const useGetGrades = (refresh) => {
     const [grades, setGrades] = useState([])
     const { authToken } = useContext(UserContext);
 
@@ -24,7 +24,7 @@ export const useGetGrades = () => {
             }
         }
         if (authToken) fetchGrades();
-    }, [authToken])
+    }, [authToken, refresh])
     return grades;
 }
 

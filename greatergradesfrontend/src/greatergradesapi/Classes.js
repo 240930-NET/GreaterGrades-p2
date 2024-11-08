@@ -28,15 +28,6 @@ export const useGetAllClasses = (refreshTrigger) => {
         if (authToken) {
             fetchClasses();
         }
-
-        // Polling interval of 300ms
-        const intervalId = setInterval(() => {
-            if (authToken) {
-                fetchClasses();
-            }
-        }, 300);
-
-        return () => clearInterval(intervalId);
     }, [authToken, refreshTrigger])
     
     return classes;
@@ -83,16 +74,6 @@ export const useGetClassById = (id) => {
         if (authToken && id) {
             fetchClass();
         }
-
-        // Set up polling interval
-        const intervalId = setInterval(() => {
-            if (authToken && id) {
-                fetchClass();
-            }
-        }, 1000); // Poll every second
-
-        // Cleanup interval on unmount
-        return () => clearInterval(intervalId);
     }, [authToken, id, refreshTrigger]);
 
     // Function to force refresh
@@ -187,18 +168,27 @@ export const addStudentToClass = async (id, studentId, authToken, refreshCallbac
 
 
 
-export const deleteTeacherFromClass = async (id, teacherId, authToken) => {
+export const deleteTeacherFromClass = async (classId, teacherId, authToken, refreshCallback, optimisticUpdate) => {
     try {
-        const response = await fetch(`${url}${id}/teachers/${teacherId}`, {
+        // Call optimistic update immediately
+        if (optimisticUpdate) {
+            optimisticUpdate(classId, teacherId);
+        }
+        const response = await fetch(`${url}${classId}/teachers/${teacherId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json'
             },
         })
-        if (response.status !== 204) throw new Error();
-    } catch {
-        console.error("Error adding teacher to class")
+        if (response.status === 204) {
+            if (refreshCallback) refreshCallback();
+            return 'Deleted';
+        }
+        throw new Error('Failed to delete student');
+    } catch (error) {
+        console.error('Error deleting student from class:', error);
+        return null;
     }
 }
 
@@ -258,14 +248,6 @@ export const useGetUsersClasses = (ids) => {
             fetchCourses();
         }
 
-        // Set up faster polling interval
-        const intervalId = setInterval(() => {
-            if (authToken && ids?.length > 0) {
-                fetchCourses();
-            }
-        }, 200); // Reduced to 200ms for faster updates
-
-        return () => clearInterval(intervalId);
     }, [authToken, ids])
 
     return classes;

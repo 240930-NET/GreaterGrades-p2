@@ -3,10 +3,13 @@ import { UserContext } from "../functions/UserContext";
 import { useGetAllClasses } from "../greatergradesapi/Classes";
 import Tiles from "./Tiles";
 import InstitutionTile from "./InstitutionTile";
+import { useGetAllInstitutions } from "../greatergradesapi/Institutions";
 
 const AdminContent = ({setSelectedItem}) => {
     const { currentUser } = useContext(UserContext);
     const allClasses = useGetAllClasses();
+    const allInstitutions = useGetAllInstitutions();
+    console.log(allInstitutions)
     const classIds = allClasses.flatMap(course => course.classId);
     
     return (
@@ -21,7 +24,9 @@ const AdminContent = ({setSelectedItem}) => {
                 <h3>Classes</h3>
                 <Tiles courseIds={classIds} setSelectedItem={setSelectedItem}/>
                 <h3>Institutions</h3>
-                <InstitutionTile />
+                {allInstitutions.map(institution => (
+                    <InstitutionTile institution={institution} />
+                ))}
             </div>
             }
         </div>

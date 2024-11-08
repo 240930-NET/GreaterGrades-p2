@@ -13,14 +13,6 @@ const ClassesContent = ({setSelectedItem}) => {
     const allClasses = useGetAllClasses(refreshTrigger);
     const classIds = allClasses.flatMap(course => course.classId);
 
-    // Set up polling for classes
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setRefreshTrigger(prev => prev + 1);
-        }, 300); // Poll every 300ms
-
-        return () => clearInterval(intervalId);
-    }, []);
 
     const handleAddClassClick = () => {
         setPopupOpen(true);

@@ -4,24 +4,23 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../functions/UserContext";
 import UpdateInstitutionPopup from "./UpdateInstitutionPopup";
 
-const InstitutionTile = () => {
+const InstitutionTile = ({institution, toggleTrigger}) => {
+    console.log(toggleTrigger)
     const { authToken } = useContext(UserContext);
     const [popupInstitutionId, setPopupInstitutionId] = useState(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const institutions = useGetAllInstitutions(refreshTrigger);
 
+    const institutionReal = institutions.find(inst => inst.institutionId === institution?.institutionId);
+
     // Set up polling for institutions
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            setRefreshTrigger(prev => prev + 1);
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, []);
+    }, [refreshTrigger]);
 
     const handleRemoveInstitutionClick = async (id) => {
         await deleteInstitution(id, authToken);
         setRefreshTrigger(prev => prev + 1);
+        toggleTrigger();
     }
 
     const handleUpdateInstitutionClick = (id) => {
@@ -35,26 +34,24 @@ const InstitutionTile = () => {
 
     return (
         <div className="tiles-container">
-            {institutions.map((institution) => (
-                <div key={institution.institutionId} className="dashboard-tile">
-                    <h3 className="tile-title">{institution.name}</h3>
-                    <img src={forestImage} alt="Course placeholder" className="tile-image" />
-                    <div className="tile-footer">
-                        <button onClick={() => handleRemoveInstitutionClick(institution.institutionId)}>
-                            Remove
-                        </button>
-                        <button onClick={() => handleUpdateInstitutionClick(institution.institutionId)}>
-                            Update
-                        </button>
-                    </div>
-                    {popupInstitutionId === institution.institutionId && (
-                        <UpdateInstitutionPopup 
-                            onClose={handlePopupClose} 
-                            institutionId={institution.institutionId} 
-                        />
-                    )}
+            <div key={institutionReal?.institutionId} className="dashboard-tile">
+                <h3 className="tile-title">{institutionReal?.name}</h3>
+                <img src={forestImage} alt="Course placeholder" className="tile-image" />
+                <div className="tile-footer">
+                    <button onClick={() => handleRemoveInstitutionClick(institutionReal?.institutionId)}>
+                        Remove
+                    </button>
+                    <button onClick={() => handleUpdateInstitutionClick(institutionReal?.institutionId)}>
+                        Update
+                    </button>
                 </div>
-            ))}
+                {popupInstitutionId === institutionReal?.institutionId && (
+                    <UpdateInstitutionPopup 
+                        onClose={handlePopupClose} 
+                        institutionId={institutionReal?.institutionId} 
+                    />
+                )}
+            </div>
         </div>
     )
 }

@@ -9,7 +9,7 @@ const getCommonHeader = (token) => ({
   },
 });
 
-export const useGetAllAssignments = () => {
+export const useGetAllAssignments = (refresh) => {
   const [assignments, setAssignments] = useState([])
   const { authToken } = useContext(UserContext);
   
@@ -17,14 +17,14 @@ export const useGetAllAssignments = () => {
     const fetchAssignment = async () => {
       try {
         const response = await fetch(`${url}`, getCommonHeader(authToken))
-        const data = response.json();
+        const data = await response.json();
         setAssignments(data || [])
       } catch {
         console.error("Error fetching assignments")
       }
     }
     if (authToken) fetchAssignment();
-  }, [authToken])
+  }, [authToken, refresh])
   return assignments;
 }
 
@@ -44,6 +44,26 @@ export const addAssignment = async (name, classId, maxScore, authToken) => {
         console.error("Error adding assignment")
         return null;
       }
+}
+
+
+export const useGetAssignmentById = (id, refresh) => {
+  const [assignment, setAssignment] = useState({})
+  const { authToken } = useContext(UserContext);
+  
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      try {
+        const response = await fetch(`${url}${id}`, getCommonHeader(authToken))
+        const data = response.json();
+        setAssignment(data || {})
+      } catch {
+        console.error("Error fetching assignments")
+      }
+    }
+    if (authToken) fetchAssignment();
+  }, [authToken, id, refresh])
+  return assignment;
 }
 
 
