@@ -4,8 +4,6 @@ import Tiles from "./Tiles";
 const EnrolledClasses = ({setSelectedItem}) => {
 
     const { currentUser } = useContext(UserContext);
-    console.log(currentUser)
-
 
     return (
         <div className="student-content">

@@ -1,29 +1,29 @@
 import React, { useState, useContext } from 'react';
-import { useGetAllUsers } from '../greatergradesapi/Auth';
+import { useGetAllUsers } from '../greatergradesapi/Users';
 import { UserContext } from '../functions/UserContext';
 import { addStudentToClass } from '../greatergradesapi/Classes';
 
 const AddStudentToClassPopup = ({ onClose, courseId }) => {
+    const { authToken, currentUser } = useContext(UserContext);
     const [selectedStudent, setSelectedStudent] = useState('');
     const [error, setError] = useState('');
-    const { currentUser, authToken } = useContext(UserContext);
-    var users = useGetAllUsers();
-    users = users.filter(user => user.institutionId == currentUser.institutionId);
+    const allUsers = useGetAllUsers();
     
+    // Filter to only show students (role 0)
+    const availableStudents = allUsers.filter(user => user.role === 0);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedStudent) {
-            setError('Please select a student to add.');
+            setError('Please select a student');
             return;
         }
 
-        try {
-            await addStudentToClass(courseId, selectedStudent, authToken);
-            onClose();
-        } catch (err) {
-            setError('Failed to add student to class.');
-            console.error(err);
+        const result = await addStudentToClass(courseId, selectedStudent, authToken);
+        if (result === 'Added') {
+            onClose(true);
+        } else {
+            setError('Failed to add student to class');
         }
     };
 
@@ -38,18 +38,21 @@ const AddStudentToClassPopup = ({ onClose, courseId }) => {
                             id="student"
                             value={selectedStudent}
                             onChange={(e) => setSelectedStudent(e.target.value)}
+                            required
                         >
-                            <option value="">Select a student</option>
-                            {users.map((user) => (
-                                <option key={user.userId} value={user.userId}>
-                                    {user.firstName} {user.lastName}
+                            <option value="">Select a student...</option>
+                            {availableStudents.map(student => (
+                                <option key={student.userId} value={student.userId}>
+                                    {student.firstName} {student.lastName} ({student.username})
                                 </option>
                             ))}
                         </select>
                     </div>
                     {error && <p className="error">{error}</p>}
-                    <button type="submit">Add Student</button>
-                    <button type="button" onClick={onClose}>Cancel</button>
+                    <div className="popup-buttons">
+                        <button type="submit">Add Student</button>
+                        <button type="button" onClick={() => onClose(false)}>Cancel</button>
+                    </div>
                 </form>
             </div>
         </div>

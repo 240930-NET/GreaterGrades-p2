@@ -9,7 +9,7 @@ const getCommonHeader = (token) => ({
   },
 });
 
-export const useGetAllAssignments = () => {
+export const useGetAllAssignments = (refresh) => {
   const [assignments, setAssignments] = useState([])
   const { authToken } = useContext(UserContext);
   
@@ -17,24 +17,19 @@ export const useGetAllAssignments = () => {
     const fetchAssignment = async () => {
       try {
         const response = await fetch(`${url}`, getCommonHeader(authToken))
-        const data = response.json();
+        const data = await response.json();
         setAssignments(data || [])
       } catch {
         console.error("Error fetching assignments")
       }
     }
     if (authToken) fetchAssignment();
-  }, [authToken])
+  }, [authToken, refresh])
   return assignments;
 }
 
 
-export const useAddAssignment = (name, classId) => {
-  const [assignment, setAssignment] = useState({})
-  const { authToken } = useContext(UserContext);
-
-  useEffect(() => {
-    const fetchAddAssignment = async () => {
+export const addAssignment = async (name, classId, maxScore, authToken) => {
       try {
         const response = await fetch(`${url}`, {
           method: 'POST',
@@ -42,82 +37,78 @@ export const useAddAssignment = (name, classId) => {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
             },
-          body: JSON.stringify({ name, classId })
+          body: JSON.stringify({ name, classId, maxScore })
         })
-        const data = await response.json();
-        setAssignment(data || {})
+        return response.json();
       } catch {
         console.error("Error adding assignment")
+        return null;
       }
-    }
-    if (authToken, name, classId) fetchAddAssignment();
-  }, [authToken, name, classId])
-  return assignment;
 }
 
 
-export const useGetAssingmentById = (id) => {
+export const useGetAssignmentById = (id, refresh) => {
   const [assignment, setAssignment] = useState({})
   const { authToken } = useContext(UserContext);
-
+  
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
         const response = await fetch(`${url}${id}`, getCommonHeader(authToken))
-        const data = await response.json();
+        const data = response.json();
         setAssignment(data || {})
       } catch {
-        console.error("Error fetching assignment")
+        console.error("Error fetching assignments")
       }
     }
-    if (authToken && id) fetchAssignment();
-  }, [authToken, id])
+    if (authToken) fetchAssignment();
+  }, [authToken, id, refresh])
   return assignment;
 }
 
 
-export const useUpdateAssignment = (id, name, classId) => {
-  const { authToken } = useContext(UserContext);
-
-  useEffect(() => {
-    const fetchUpdateAssignment = async () => {
-      try {
-        const response = await fetch(`${url}${id}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-            },
-          body: JSON.stringify({ name, classId })
-        })
-        if (response.status !== 204) throw new Error;
-      } catch {
-        console.error("Error updating assignment")
-      }
-    }
-    if (authToken && id && name && classId) fetchUpdateAssignment();
-  }, [authToken, id, name, classId])
+export const getAssignmentById = async (id, authToken) => {
+  try {
+    const response = await fetch(`${url}${id}`, getCommonHeader(authToken))
+    return await response.json();
+  } catch {
+    console.error("Error fetching assignment")
+    return null;
+  }
 }
 
-export const useDeleteAssignment = (id) => {
-  const { authToken } = useContext(UserContext);
-  useEffect(() => {
-    const fetchDeleteAssignment = async () => {
-      try {
-        const response = await fetch(`${url}${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        if (response.status !== 204) throw new Error;
-      } catch {
-        console.error("Error deleting assignment")
+
+export const updateAssignment = async (id, name, classId, authToken) => {
+  try {
+    const response = await fetch(`${url}${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({ name, classId })
+    })
+    if (response.status !== 204) throw new Error;
+  } catch {
+    console.error("Error updating assignment")
+  }
+}
+
+export const deleteAssignment = async (id, authToken) => {
+  try {
+    const response = await fetch(`${url}${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
       }
-    }
-    if (authToken && id) fetchDeleteAssignment();
-  }, [authToken, id])
+    })
+    if (response.status !== 204) throw new Error;
+    return "Deleted";
+  } catch {
+    console.error("Error deleting assignment")
+    return null;
+  }
 }
 
 

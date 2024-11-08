@@ -99,7 +99,6 @@ const Dashboard = () => {
     }, [currentUser, courses]);
 
     const renderContent = () => {
-        console.log("Dashboard setSelectedItem:", setSelectedItem);
 
         switch (selectedItem) {
             case 'dashboard':

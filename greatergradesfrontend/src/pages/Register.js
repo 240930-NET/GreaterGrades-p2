@@ -45,7 +45,6 @@ function Register() {
             );
             if (user) {
                 const token = await loginAPI(formData.username, formData.password)
-                console.log(token)
                 if (token) {
                     login(token, user);
                     navigate('/dashboard');
@@ -71,7 +70,6 @@ function Register() {
         }
         fetchInstitutions();
     }, [])
-    console.log(institutions)
 
     return (
         <div className="login-container">

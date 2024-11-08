@@ -6,8 +6,6 @@ import AddClassPopup from "./AddClassPopup";
 const TaughtClasses = ({ setSelectedItem }) => {
     const { currentUser } = useContext(UserContext);
     const [isPopupOpen, setPopupOpen] = useState(false);
-    console.log("TaughtClasses setSelectedItem:", setSelectedItem);
-
 
     const handleAddClassClick = () => {
         setPopupOpen(true);

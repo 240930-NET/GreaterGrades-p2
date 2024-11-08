@@ -9,7 +9,7 @@ const getCommonHeader = (token) => ({
     },
 });
 
-export const useGetGrades = () => {
+export const useGetGrades = (refresh) => {
     const [grades, setGrades] = useState([])
     const { authToken } = useContext(UserContext);
 
@@ -24,28 +24,19 @@ export const useGetGrades = () => {
             }
         }
         if (authToken) fetchGrades();
-    }, [authToken])
+    }, [authToken, refresh])
     return grades;
 }
 
 
-export const useGetGrade = (id) => {
-    const [grade, setGrade] = useState({})
-    const { authToken } = useContext(UserContext);
-
-    useEffect(() => {
-        const fetchGrade = async () => {
-            try {
-                const response = await fetch(`${url}${id}`, getCommonHeader(authToken));
-                const data = await response.json();
-                setGrade(data || {})
-            } catch {
-                console.error('Error fetching grade');
-            }
-        }
-        if (authToken && id) fetchGrade();
-    }, [authToken, id])
-    return grade;
+export const getGrade = async (id, authToken) => {
+    try {
+        const response = await fetch(`${url}${id}`, getCommonHeader(authToken));
+        return await response.json();
+    } catch {
+        console.error('Error fetching grade');
+        return null;
+    }
 }
 
 
@@ -70,4 +61,20 @@ export const useUpdateGrade = (id, score, gradingStatus) => {
         }
         if (authToken && id && score && gradingStatus) fetchUpdateGrade();
     }, [authToken, id, score, gradingStatus])
+}
+
+
+
+
+
+
+
+export const getGrades = async (authToken) => {
+    try {
+        const response = await fetch(`${url}`, getCommonHeader(authToken));
+        return await response.json()
+    } catch {
+        console.error('Error fetching grades');
+        return null;
+    }
 }

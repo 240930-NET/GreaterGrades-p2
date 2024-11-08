@@ -10,7 +10,7 @@ const getCommonHeader = (token) => ({
 });
 
 
-export const useGetAllClasses = () => {
+export const useGetAllClasses = (refreshTrigger) => {
     const [classes, setClasses] = useState([]);
     const { authToken } = useContext(UserContext);
 
@@ -24,8 +24,12 @@ export const useGetAllClasses = () => {
                 console.error("Failed to fetch classes")
             }
         }
-        if (authToken) fetchClasses();
-    }, [authToken])
+
+        if (authToken) {
+            fetchClasses();
+        }
+    }, [authToken, refreshTrigger])
+    
     return classes;
 }
 
@@ -41,7 +45,6 @@ export const addClass = async (subject, institutionId, authToken) => {
             body: JSON.stringify({ subject, institutionId })
         });
         if (!response.ok) throw new Error("Failed to add class");
-        console.log(response)
         return await response.json();
     } catch (error) {
         console.error("Error adding class:", error);
@@ -53,6 +56,7 @@ export const addClass = async (subject, institutionId, authToken) => {
 export const useGetClassById = (id) => {
     const [course, setCourse] = useState({});
     const { authToken } = useContext(UserContext);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     useEffect(() => {
         const fetchClass = async () => {
@@ -64,10 +68,18 @@ export const useGetClassById = (id) => {
                 console.error("Error fetching class");
             }
         }
-        if (authToken && id) fetchClass();
-    }, [authToken, id]);
-    return course;
-}
+
+        // Initial fetch
+        if (authToken && id) {
+            fetchClass();
+        }
+    }, [authToken, id, refreshTrigger]);
+
+    // Function to force refresh
+    const refresh = () => setRefreshTrigger(prev => prev + 1);
+
+    return { course, refresh };
+};
 
 
 export const useUpdateClass = (id, subject) => {
@@ -133,7 +145,7 @@ export const addTeacherToClass = async (id, teacherId, authToken) => {
 };
 
 
-export const addStudentToClass = async (id, studentId, authToken) => {
+export const addStudentToClass = async (id, studentId, authToken, refreshCallback) => {
     try {
         const response = await fetch(`${url}${id}/students/${studentId}`, {
             method: 'POST',
@@ -142,44 +154,69 @@ export const addStudentToClass = async (id, studentId, authToken) => {
                 'Content-Type': 'application/json'
             },
         });
-        if (response.status !== 204) throw new Error("Failed to add teacher");
+        if (response.status === 204) {
+            if (refreshCallback) refreshCallback();
+            return 'Added';
+        }
+        throw new Error("Failed to add student");
     } catch (error) {
-        console.error("Error adding teacher to class:", error);
+        console.error("Error adding student to class:", error);
+        return null;
     }
 };
 
 
 
-export const deleteTeacherFromClass = async (id, teacherId, authToken) => {
+export const deleteTeacherFromClass = async (classId, teacherId, authToken, refreshCallback, optimisticUpdate) => {
     try {
-        const response = await fetch(`${url}${id}/teachers/${teacherId}`, {
+        // Call optimistic update immediately
+        if (optimisticUpdate) {
+            optimisticUpdate(classId, teacherId);
+        }
+        const response = await fetch(`${url}${classId}/teachers/${teacherId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json'
             },
         })
-        if (response.status !== 204) throw new Error();
-    } catch {
-        console.error("Error adding teacher to class")
+        if (response.status === 204) {
+            if (refreshCallback) refreshCallback();
+            return 'Deleted';
+        }
+        throw new Error('Failed to delete student');
+    } catch (error) {
+        console.error('Error deleting student from class:', error);
+        return null;
     }
 }
 
 
-export const deleteStudentFromClass = async (id, studentId, authToken) => {
+export const deleteStudentFromClass = async (classId, studentId, authToken, refreshCallback, optimisticUpdate) => {
     try {
-        const response = await fetch(`${url}${id}/students/${studentId}`, {
+        // Call optimistic update immediately
+        if (optimisticUpdate) {
+            optimisticUpdate(classId, studentId);
+        }
+
+        const response = await fetch(`${url}${classId}/students/${studentId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json'
-            },
-        })
-        if (response.status !== 204) throw new Error();
-    } catch {
-        console.error("Error adding teacher to class")
+            }
+        });
+        
+        if (response.status === 204) {
+            if (refreshCallback) refreshCallback();
+            return 'Deleted';
+        }
+        throw new Error('Failed to delete student');
+    } catch (error) {
+        console.error('Error deleting student from class:', error);
+        return null;
     }
-}
+};
 
 //// Fetches not specifially tied to a single endpoint
 
@@ -204,7 +241,12 @@ export const useGetUsersClasses = (ids) => {
                 console.error("Error fetching classes")
             }
         }
-        if (authToken && ids?.length > 0) fetchCourses();
+
+        // Initial fetch
+        if (authToken && ids?.length > 0) {
+            fetchCourses();
+        }
+
     }, [authToken, ids])
 
     return classes;

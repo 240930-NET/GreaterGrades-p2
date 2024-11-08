@@ -29,7 +29,6 @@ const AddClassPopup = ({ onClose, institutionId }) => {
             onClose();
         } else {
             setError('Failed to create class.');
-            console.log(course)
         }
     };
     
@@ -42,6 +41,7 @@ const AddClassPopup = ({ onClose, institutionId }) => {
                     <div>
                         <label htmlFor="subject">Class Subject:</label>
                         <input
+                            className="subject"
                             type="text"
                             id="subject"
                             value={subject}

@@ -25,7 +25,7 @@ namespace GreaterGradesBackend.Api.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = "Admin,InstitutionAdmin")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GradeDto>>> GetAllGrades()
         {

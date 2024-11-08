@@ -77,8 +77,12 @@ namespace GreaterGradesBackend.Infrastructure
             );
 
             modelBuilder.Entity<Grade>().HasData(
-                new Grade {GradeId = 1, UserId = 1, AssignmentId = 1, Score = 20},
-                new Grade {GradeId = 2, UserId = 2, AssignmentId = 2, Score = 25}
+                new Grade {GradeId = 1, UserId = 1, AssignmentId = 1, Score = 20, GradingStatus = GradeStatus.Graded},
+                new Grade {GradeId = 2, UserId = 2, AssignmentId = 2, Score = 30, GradingStatus = GradeStatus.Graded},
+                new Grade {GradeId = 3, UserId = 3, AssignmentId = 3, Score = 40, GradingStatus = GradeStatus.Graded},
+                new Grade {GradeId = 4, UserId = 4, AssignmentId = 4, Score = 50, GradingStatus = GradeStatus.Graded},
+                new Grade {GradeId = 5, UserId = 7, AssignmentId = 5, Score = 60, GradingStatus = GradeStatus.Graded},
+                new Grade {GradeId = 6, UserId = 8, AssignmentId = 6, Score = 70, GradingStatus = GradeStatus.Graded}
             );
 
 

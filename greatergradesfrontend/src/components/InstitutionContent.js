@@ -2,13 +2,22 @@ import { useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
 import AddInstitutionPopup from "./AddInstitutionPopup";
 import InstitutionTile from "./InstitutionTile";
+import { useGetAllInstitutions } from "../greatergradesapi/Institutions";
 
 const InstitutionContent = () => {
     const { currentUser } = useContext(UserContext);
-    const[isAddPopupOpen, setAddPopupOpen] = useState(false);
+    const [isAddPopupOpen, setAddPopupOpen] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const institutions = useGetAllInstitutions(refreshTrigger);
+    const toggleTrigger = () => setRefreshTrigger(prev => prev + 1);
 
     const handleAddInstitutionClick = () => {
         setAddPopupOpen(true);
+    };
+
+    const handlePopupClose = () => {
+        setAddPopupOpen(false);
+        setRefreshTrigger(prev => prev + 1);
     };
 
     return (
@@ -19,14 +28,22 @@ const InstitutionContent = () => {
                     Add New Institution
                 </button>
             </div>
-            <div className="dashboard-tiles">
-                <InstitutionTile />
+            <div className="tiles-container">
+                {institutions.map((institution) => (
+                    <InstitutionTile 
+                        key={institution.institutionId} 
+                        institution={institution} 
+                        toggleTrigger={toggleTrigger} 
+                    />
+                ))}
             </div>
             {isAddPopupOpen && (
-                <AddInstitutionPopup onClose={() => setAddPopupOpen(false)} institutionId={currentUser?.institutionId} />
+                <AddInstitutionPopup 
+                    onClose={handlePopupClose}  
+                />
             )}
         </div>
-    )
-}
+    );
+};
 
 export default InstitutionContent;
